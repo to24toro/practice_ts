@@ -1,9 +1,22 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Channels } from './channels';
+import { Channels, Channel } from './channels';
 import { DirectMessages } from './DirectMessage';
+import gql from 'graphql-tag';
+import { Query } from '@apollo/react-components';
 
-
+const membershipQuery = gql`
+{
+    Membership(where: {userId: {_eq:"user1"}}) {
+      id
+      direct
+      Channel {
+        id
+        name
+      }
+    }
+  }
+`;
 
 const SidebarContainer = styled.div`
     height: 100%;
@@ -40,9 +53,18 @@ const Status = styled.span`
     display: inline-block;
 `;
 
+interface Membership {
+    direct: boolean;
+    id: string;
+    Channel: Channel
+}
+
 export function Sidebar () {
     return (
+        <Query query={membershipQuery}>
+            {({loading,query, data}: any) =>
         <SidebarContainer>
+            
             <Header>
                 <H1>Slack Clone</H1>
                 <div>
@@ -53,10 +75,19 @@ export function Sidebar () {
                     TOTORO
                 </UsernameContainer>
             </Header>
-            <Channels />
-            <DirectMessages />
+            {!loading && data.Membership? <>
+            <Channels channels={(data.Membership as Membership[]).filter(membership => !membership.direct).map(membership => membership.Channel)}/>
+            <DirectMessages channels={(data.Membership as Membership[]).reduce((acc,value) => {
+                if (value.direct){
+                    return [...acc,value.Channel]
+                }
+                return acc
+            },[] as Channel[])}/>
+            </>
+            : null}
             
-
         </SidebarContainer>
+        }
+        </Query>
     )
 }

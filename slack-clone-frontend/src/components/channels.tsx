@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
+
 const ChannelsTitles = styled.div`
     margin: 2rem 0 1rem;
     width: 100%;
@@ -30,17 +31,28 @@ const Button = styled.button`
     }
 `;
 
-export function Channels() {
-    const channels = ["announcements", "general", "frontend", "backend", "random"];
+export interface Channel {
+    id: string;
+    name: string;
+
+}
+
+interface ChannelProps {
+    channels: Channel[]
+}
+
+
+export function Channels({channels}: ChannelProps) {
+    // const channels = ["announcements", "general", "frontend", "backend", "random"];
     return (
         <>
         <ChannelsTitles>
             <h2>Channels</h2><i className="fas fa-plus-circle"></i>
         </ChannelsTitles>
         <ul>
-            {channels.map(channel =><ChannelItem key = {channel}># {channel}</ChannelItem>)}
+            {channels.map(channel =><ChannelItem key = {channel.id}># {channel.name}</ChannelItem>)}
         </ul>
         <Button className="channel-button"><i className="fas fa-plus-circle"></i>Add Channel</Button>
-        </>
-    )
+        </>      
+    );
 }
