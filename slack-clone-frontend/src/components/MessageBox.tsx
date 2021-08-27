@@ -1,5 +1,35 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { Query, QueryResult } from '@apollo/react-components';
+import gql from 'graphql-tag';
+import { MessageQuery } from '../generated/MessageQuery';
+
+const messageQuery = gql`
+    query MessageQuery{
+        Message(where: {channelId: {_eq: "c0c8e439-3a86-4d19-9641-67fa02e05593" } }
+        ) {
+            body
+            date
+            User {
+                username
+            }
+        }
+    }
+`;
+
+const messageSubscription = gql`
+    subscription MessageSubscription {
+        Message(where: {channelId: {_eq: "c0c8e439-3a86-4d19-9641-67fa02e05593" } }
+        ) {
+            id
+            date
+            body
+            User {
+                username
+            }
+        }
+    }
+`;
 
 const Container = styled.div`
     margin-top: 85px;
@@ -24,47 +54,52 @@ const DataSpan = styled.span`
     color: darkgrey;
 `;
 
+
+interface Message {
+    id: string;
+    body: string;
+    date: string;
+    User: {
+        username: string
+    }
+}
 export function MessageBox() {
     const messageListRef = React.createRef<HTMLDivElement>();
     React.useEffect(() => {
         messageListRef.current!.scrollTo(messageListRef.current!.scrollTop,messageListRef.current!.scrollHeight)
     }, [messageListRef]);
-    const messages = [
-        { message: 'TOTORO intamon', user: 'Mei', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Satsuki', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Mei', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Mei', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Satsuki', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Mei', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Satsuki', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Mei', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Satsuki', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Satsuki', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Mei', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Satsuki', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Mei', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'May', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-        { message: 'TOTORO intamon', user: 'Satsuki', date:'Sat May 11 2019 06:02:23 GMT*0200 (CEST)'},
-    ]
+
+    const subscription = (subscribeToMore: any) => {
+        subscribeToMore({
+            document: messageSubscription,
+            updateQuery: (prev: Message[], { subscriptionData }: any) => {
+                if (!subscriptionData.data) return prev;
+                return subscriptionData.data;
+            }
+        });
+    };
+
     return (
-        <Container ref={messageListRef}>
-            <ul>
-                {messages.map((message, index)=><li key={index}>
-                    <Username>{message.user}</ Username>
-                    <DataSpan>{new Intl.DateTimeFormat('en-GB').format(new Date(message.date))}</DataSpan>
-                    <p>{message.message}</p>
-                </li>)}
-            </ul>
-        </Container>
+        <Query query={messageQuery}>
+            {({loading,error,data, subscribeToMore}:QueryResult<MessageQuery>) => {
+                subscription(subscribeToMore);
+                return (
+                <Container ref={messageListRef}>
+                <ul>
+                    {!loading && data!.Message ?( data!.Message as Message[]).map(
+                        (message,index) => {
+                           return (
+                        <li key={message.id}>
+                            <Username>{message.User.username}</ Username>
+                            <DataSpan>{message.date}</DataSpan>
+                        <p>{message.body}</p>
+                        </li>
+                    )}): null }
+                </ul>
+            </Container>
+            )}
+            }
+        
+        </Query>
     )
 }

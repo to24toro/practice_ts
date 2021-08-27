@@ -18,5 +18,5 @@ export function Layout () {
             <Sidebar />
             <MainContent />
         </Container>
-    )
+    );
 }
