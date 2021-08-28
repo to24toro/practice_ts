@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { InputMessage } from './input';
+import { InputMessage } from './Input';
 import { MainContentHeader } from './MainContentHeader';
 import { MessageBox } from './MessageBox';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Channels, Channel } from './channels';
+import { Channels, Channel } from './Channels';
 import { DirectMessages } from './DirectMessage';
 import gql from 'graphql-tag';
 import { Query } from '@apollo/react-components';
