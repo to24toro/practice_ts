@@ -1,5 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { StoreContext } from '../store/store';
+
 
 const Container = styled.div`
     position: fixed;
@@ -41,10 +43,11 @@ const Input = styled.input`
 `;
 
 export function MainContentHeader() {
+    const { selectedChannel} = React.useContext(StoreContext)
     return (
         <Container>
             <Title>
-                <h3>#general</h3>
+                <h3># {selectedChannel.name}</h3>
                 <i className="far fa-user"></i>
                 42 members
             </Title>

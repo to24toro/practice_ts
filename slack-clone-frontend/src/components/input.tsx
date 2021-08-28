@@ -1,7 +1,8 @@
-import { gql } from '@apollo/client';
+import gql from 'graphql-tag';
 import * as React from 'react';
 import styled from 'styled-components';
 import { Mutation } from '@apollo/react-components';
+import { StoreContext } from '../store/store';
 
 
 const InputStyle = styled.input`
@@ -50,12 +51,13 @@ mutation SubmitMessage($userId: String!, $body: String, $channelId: uuid!){
 `;
 
 export function InputMessage () {
+    const { selectedChannel, user } = React.useContext(StoreContext)
     return <Mutation mutation={submitMessageMutation}>
         {(submitMessage: any, { data }: any) => (
             <form onSubmit={
                 e => {
                     e.preventDefault();
-                    submitMessage({variables: { userId:"user1",channelId: "c0c8e439-3a86-4d19-9641-67fa02e05593", body: (e.target as any).message.value}});
+                    submitMessage({variables: { userId: user,channelId: selectedChannel.id, body: (e.target as any).message.value}});
                     (e.target as any).reset()
                 }}
             >

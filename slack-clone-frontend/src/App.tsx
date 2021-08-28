@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import {  ApolloClient, InMemoryCache, ApolloProvider, split, HttpLink} from "@apollo/client";
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { StoreContextProvider } from './store/store';
 
 // const client = new ApolloClient({
 //   uri: "https://slack-clone-hasura-jp.herokuapp.com/v1/graphql",
@@ -40,11 +41,14 @@ const client = new ApolloClient({
 
 const App: React.FC = () => {
   return (
-    <ApolloProvider client={client}>
-      <div className="App">
-        <Layout />
-      </div>
-    </ApolloProvider>
+    <StoreContextProvider>
+      <ApolloProvider client={client}>
+        <div className="App">
+          <Layout />
+        </div>
+      </ApolloProvider>
+    </StoreContextProvider>
+    
   );
 };
 

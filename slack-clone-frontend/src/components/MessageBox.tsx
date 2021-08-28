@@ -3,32 +3,32 @@ import styled from 'styled-components';
 import { Query, QueryResult } from '@apollo/react-components';
 import gql from 'graphql-tag';
 import { MessageQuery } from '../generated/MessageQuery';
+import { StoreContext } from '../store/store';
 
-const messageQuery = gql`
-    query MessageQuery{
-        Message(where: {channelId: {_eq: "c0c8e439-3a86-4d19-9641-67fa02e05593" } }
-        ) {
-            body
-            date
-            User {
-                username
-            }
-        }
+export const messageQuery = gql`
+  query MessageQuery($channelId: uuid) {
+    Message(where: { channelId: { _eq: $channelId } }) {
+      id
+      body
+      date
+      User {
+        username
+      }
     }
+  }
 `;
 
-const messageSubscription = gql`
-    subscription MessageSubscription {
-        Message(where: {channelId: {_eq: "c0c8e439-3a86-4d19-9641-67fa02e05593" } }
-        ) {
-            id
-            date
-            body
-            User {
-                username
-            }
-        }
+export const messageSubscription = gql`
+  subscription MessageSubscription($channelId: uuid) {
+    Message(where: { channelId: { _eq: $channelId } }) {
+      id
+      date
+      body
+      User {
+        username
+      }
     }
+  }
 `;
 
 const Container = styled.div`
@@ -65,27 +65,31 @@ interface Message {
 }
 export function MessageBox() {
     const messageListRef = React.createRef<HTMLDivElement>();
+    const { selectedChannel } = React.useContext(StoreContext)
     React.useEffect(() => {
         messageListRef.current!.scrollTo(messageListRef.current!.scrollTop,messageListRef.current!.scrollHeight)
     }, [messageListRef]);
 
     const subscription = (subscribeToMore: any) => {
         subscribeToMore({
+            variables: {channelId: selectedChannel.id},
             document: messageSubscription,
             updateQuery: (prev: Message[], { subscriptionData }: any) => {
                 if (!subscriptionData.data) return prev;
-                return subscriptionData.data;
+                return Object.assign({},prev, subscriptionData.data);
             }
         });
     };
 
     return (
-        <Query query={messageQuery}>
+        <Query query={messageQuery} variables={{channelId: selectedChannel.id}}>
             {({loading,error,data, subscribeToMore}:QueryResult<MessageQuery>) => {
                 subscription(subscribeToMore);
                 return (
                 <Container ref={messageListRef}>
                 <ul>
+                    {error ? error: null}
+                    {/* {!data && !data.Message ? <p>Select a channel</p>: null} */}
                     {!loading && data!.Message ?( data!.Message as Message[]).map(
                         (message,index) => {
                            return (
@@ -94,7 +98,8 @@ export function MessageBox() {
                             <DataSpan>{message.date}</DataSpan>
                         <p>{message.body}</p>
                         </li>
-                    )}): null }
+                    );
+                    }): null }
                 </ul>
             </Container>
             )}
