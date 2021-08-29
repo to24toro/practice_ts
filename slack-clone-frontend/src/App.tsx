@@ -11,14 +11,21 @@ import { StoreContextProvider } from './store/store';
 // });
 
 const httpLink = new HttpLink({
-  uri: "https://slack-clone-hasura-jp.herokuapp.com/v1/graphql",
-
+  uri: `https://${process.env.REACT_APP_HASURA_ENDPOINT}`,
+  headers: {
+    'x-hasura-access-key': process.env.REACT_APP_HASURA_ADMIN_SECRET
+  }
 });
 
 const wsLink = new WebSocketLink({
-  uri: "ws://slack-clone-hasura-jp.herokuapp.com/v1/graphql",
+  uri: `wss://${process.env.REACT_APP_HASURA_ENDPOINT}`,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+      headers: {
+        'x-hasura-access-key': process.env.REACT_APP_HASURA_ADMIN_SECRET
+      }
+    }
   }
 });
 

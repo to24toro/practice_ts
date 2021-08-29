@@ -1,20 +1,21 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { StoreContext } from '../store/store';
+import { Input } from './styles/input.styles';
 
 
 const Container = styled.div`
     position: fixed;
     top: 0;
     z-index: 5;
-    background-color: white;
+    background-color: ${props => props.theme.backgroundColorLight};
     width: calc(100vw - 220px);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between; 
     align-items: center;
     padding: 1rem 0;
-    border-bottom: 1px solid lightgrey;
+    border-bottom: 1px solid ${props => props.theme.borderColorLight};
 `;
 
 const Title = styled.div`
@@ -25,22 +26,11 @@ const Title = styled.div`
     }
     i {
         margin-right:0.5rem;
-        color: darkgrey;
+        color: ${props => props.theme.borderColorDark};
     }
 `;
 
-const Input = styled.input`
-    border: 1px solid darkgray;
-    padding: 0.5rem;
-    border-radious: 5px;
-    outline: none;
-    &::placeholder{
-        font-size: 1rem;
-    }
-    &:hover, &:active,&:focus{
-        border: 1px solid DimGrey;
-    }
-`;
+
 
 export function MainContentHeader() {
     const { selectedChannel} = React.useContext(StoreContext)

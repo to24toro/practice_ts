@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Channel } from './Channels';
 import { StoreContext,Actions } from '../store/store';
+import { Item } from './styles/SidebarItem.styles';
 
 const MessagesTitles = styled.div`
     margin: 2rem 0 1rem;
@@ -12,11 +13,6 @@ const MessagesTitles = styled.div`
     h2 {
         font-size: 1rem;
     }
-`;
-
-export const Item = styled.li`
-    margin: 0.25rem 0;
-    cursor: pointer;
 `;
 
 const Status = styled.span`
