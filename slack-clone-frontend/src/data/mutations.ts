@@ -33,3 +33,19 @@ mutation SubmitMessage($userId: String!, $body: String, $channelId: uuid!){
     }
   }
 `;
+
+export const joinChannel = gql`
+  mutation JoinChannel($userId: String!, $channelId: uuid!) {
+    insert_Membership(
+      objects: { channelId: $channelId, userId: $userId, direct: false }
+    ) {
+      returning {
+        id
+        Chanel {
+          id
+          name
+        }
+      }
+    }
+  }
+`;

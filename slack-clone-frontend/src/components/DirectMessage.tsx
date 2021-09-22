@@ -29,7 +29,7 @@ interface DirectMessageProps {
     channels: Channel[]
 }
 export function DirectMessages({channels} : DirectMessageProps) {
-    const {  dispatch }=React.useContext(StoreContext);
+    const { dispatch }=React.useContext(StoreContext);
 
     const selectChannel = (channel: {id: string, name: string}) => {
         dispatch({type: Actions.SELECTED_CHANNEL, payload: channel})

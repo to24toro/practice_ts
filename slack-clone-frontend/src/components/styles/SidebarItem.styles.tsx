@@ -7,3 +7,4 @@ export const Item = styled.li`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
+// text-overflow溢れたテキストをどうするか

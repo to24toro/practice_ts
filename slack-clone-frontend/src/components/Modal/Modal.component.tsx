@@ -2,6 +2,10 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 
+// fixed 固定
+// vw,vh その画面全てに対してnの幅高さ %とは異なる。%はその要素の中での割合
+// border-box paddingとborderがwidth,heightに含まれる
+// rem　html要素のサイズを継承, emは親要素を継承
 const Container = styled.div`
   position: fixed;
   width: 100vw;
@@ -45,7 +49,7 @@ const ModalBody = styled.div`
   max-width: 500px;
   margin: 0 auto;
   max-height: calc(100vh - 110px);
-  /* overflow-y: auto; */
+  overflow-y: auto;
 `;
 
 

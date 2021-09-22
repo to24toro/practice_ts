@@ -12,3 +12,5 @@ declare module 'styled-components' {
     }
   }
   
+
+  // declare module: d.tsの場合のモジュールの宣言・型定義

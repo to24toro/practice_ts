@@ -20,7 +20,7 @@ const Container = styled.div`
         margin-top: 0.25rem;
     }
 `;
-
+// overflow-y ブロックレベル要素の内容が上下の境界からあふれた場合、どのように表示するのかを設定
 const Username = styled.span`
     font-weight: 800;
     margin-right: 5px;

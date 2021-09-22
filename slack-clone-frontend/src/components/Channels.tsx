@@ -4,6 +4,7 @@ import { Actions, StoreContext } from '../store/store';
 import { Item } from './styles/SidebarItem.styles';
 
 import { Finder } from './Sidebar/Channels/CreateChannel.component';
+import { JoinChannel } from './Sidebar/Channels/JoinChannel.component';
 
 const ChannelsTitles = styled.div`
   margin: 2rem 0 1rem;
@@ -45,22 +46,23 @@ interface ChannelProps {
 
 export function Channels({channels}: ChannelProps) {
     const {  dispatch }=React.useContext(StoreContext);
-    const [isMordalOpen, setModal] = React.useState(false);
-
+    const [isCreateChannelOpen, setCreateChannelModal] = React.useState(false);
+    const [isJoinChannelOpen, setJoinChannelModal] = React.useState(false);
 
     const selectChannel = (channel: {id: string, name:string}) => {
         dispatch({type: Actions.SELECTED_CHANNEL, payload:channel})
     }
     return (
         <>
-        {isMordalOpen ? <Finder exitCallback={()=> setModal(false)}/> : null }
+        {isCreateChannelOpen ? <Finder exitCallback={()=> setCreateChannelModal(false)}/> : null }
+        {isJoinChannelOpen ? <JoinChannel exitCallback={() => setJoinChannelModal(false)} /> : null}
         <ChannelsTitles>
-            <h2>Channels</h2><i className="fas fa-plus-circle" onClick={()=>setModal(true)}></i>
+            <h2>Channels</h2><i className="fas fa-plus-circle" onClick={()=>setCreateChannelModal(true)}></i>
         </ChannelsTitles>
         <ul>
             {channels.map(channel =><Item onClick={()=>selectChannel({id: channel.id, name: channel.name})} key = {channel.id}># {channel.name}</Item>)}
         </ul>
-        <Button className="channel-button"><i className="fas fa-plus-circle" />Add Channel</Button>
+        <Button className="channel-button"><i className="fas fa-plus-circle" onClick={()=>setJoinChannelModal(true)}/>Add Channel</Button>
         </>      
     );
 }

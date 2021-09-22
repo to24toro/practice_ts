@@ -1,67 +1,16 @@
 import { Mutation } from '@apollo/react-components';
 import * as React from 'react';
-import styled from 'styled-components';
 import { StoreContext } from '../../../store/store';
 import { CreateMembership, CreateChannelMutation } from '../../../data/mutations';
 import { Modal } from '../../Modal/Modal.component';
 import { Input } from '../../styles/input.styles';
+import { CloseButton, Form, SubmitButton } from '../../styles/ModalButtons';
 
 
 
 interface Props {
     exitCallback: () => void;
 }
-
-const CloseButton = styled.button`
-    background-color: white;
-    border: 1px solid lightgrey;
-    outline: none;
-    border-radius: 1rem;
-    color: Dimgrey;
-    padding: 1rem;
-    font-size: 1.5rem;
-    margin-top: 1rem;
-    margin-right: 1rem;
-    cursor: pointer;
-    :hover {
-        border-color: 3px solid dimgrey;
-        color: black;
-    }
-`;
-
-const SubmitButton = styled(CloseButton)`
-    background-color: darkgreen;
-    border: 3px solid black;
-    color: white;
-    :disabled {
-        background-color: lightgrey;
-        color: black;
-        cursor: default;
-    }
-    &:not(:disabled):hover {
-        border-color: 3px solid black;
-        color: white;
-    }
-`;
-
-
-const Form = styled.form`
-    max-width: 700px;
-    label {
-        font-weight: bolder;
-        display: block;
-        margin: 1rem 0;
-    }
-    input {
-        width: 100%;
-        padding: 1rem;
-        border: 1px solid black;
-    }
-`;
-
-
-
-
 
 export function Finder(props: Props) {
     const { user } = React.useContext(StoreContext)
@@ -79,7 +28,7 @@ export function Finder(props: Props) {
             }}>
                 {(createChannel: any, { data }: any) => (
             <>
-            <h1>Create channel</h1>
+            {/* <h1>Create channel</h1> */}
             <Form onSubmit={(e: any)=> {
                 e.preventDefault();
                 createChannel({variables: {name: e.target.channelName.value}});

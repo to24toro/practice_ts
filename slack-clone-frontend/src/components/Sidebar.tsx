@@ -60,6 +60,7 @@ export function Sidebar () {
                 return Object.assign({},prev, subscriptionData.data);
             }
         });
+        // documentにはsubscribeクエリ、prevは前のデータ,subscriptionDataは追加データ??
     };
     return (
         <Query query={membershipQuery}>

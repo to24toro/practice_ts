@@ -5,8 +5,11 @@ export enum Actions {
     "SELECTED_CHANNEL",
     "USER"
 }
+// enum 数値列挙型、定数を列挙して持たせておく
 
 const initialChannel = localStorage.getItem('selected_channel') ? JSON.parse(localStorage.getItem('selected_channel')!) : {id: "aba0fd58-a38b-4d9f-a05e-3b5e72c090b4", name:'general'};
+// !マークはnullやundefinedを許さない
+
 const initialStoreValue = {
     selectedChannel: initialChannel,
     user: localStorage.getItem('current_user') || ""
@@ -18,13 +21,17 @@ export interface User {
     username: string;
     id: string;
   }
+// 基本的にtypeでなくinterfaceでいい？
 
 type SelectedChannelAction = {
     type: Actions.SELECTED_CHANNEL;
     payload: { id: string; name: string };
 };
 
-type UserAction = { type: Actions.USER; payload: string };
+type UserAction = {
+    type: Actions.USER;
+    payload: string
+};
 
 type Action = SelectedChannelAction | UserAction
 
@@ -55,6 +62,7 @@ interface Props {
 
 export function StoreContextProvider(props: Props) {
     const [store, dispatch] = React.useReducer(storeReducer, initialStoreValue);
+    // useReducer storeの状態をdispath=storeReducerで更新
     React.useEffect(() => {
         localStorage.setItem('selected_channel', JSON.stringify(store.selectedChannel))
     },[store.selectedChannel]);
@@ -69,6 +77,6 @@ export function StoreContextProvider(props: Props) {
         
     },[store.user])
     return <StoreContext.Provider value={{...store, dispatch}}>
-        {props.children}
-    </StoreContext.Provider>
+                {props.children}
+            </StoreContext.Provider>
 }
