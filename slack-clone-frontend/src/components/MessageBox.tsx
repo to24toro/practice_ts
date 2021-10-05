@@ -62,6 +62,7 @@ export function MessageBox() {
     return (
         <Query query={messageQuery} variables={{channelId: selectedChannel.id}}>
             {({loading,error,data, subscribeToMore}:QueryResult<MessageQuery>) => {
+                console.log(data)
                 subscription(subscribeToMore);
                 return (
                 <Container ref={messageListRef}>
