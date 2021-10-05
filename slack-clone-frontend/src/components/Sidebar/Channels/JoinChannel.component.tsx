@@ -5,6 +5,7 @@ import { allChannelsQuery } from '../../../data/queries';
 import { Modal } from '../../Modal/Modal.component';
 import { Input } from '../../styles/input.styles';
 import { Form } from '../../styles/ModalButtons';
+import { DataContainer, DataItem } from 'components/styles/DataModal.styles';
 import { debounce } from 'lodash';
 import { Actions, StoreContext } from '../../../store/store';
 import { joinChannel } from '../../../data/mutations';
@@ -13,21 +14,7 @@ interface Props {
     exitCallback: ()=> void;
 }
 
-const ChannelItem = styled.div`
-    padding: 1rem 2rem;
-    borderTop: 1 solid ${props => props.theme.backgroundColorLight}
-    box-sizing: border-box;
-    cursor: pointer;
-`;
 
-const ChannelContainer = styled.div`
-    margin-top: 2rem;
-    max-height: calc(100vh-200px);
-    overflow-y: auto;
-    & > ${ChannelItem}: last-child {
-        border-bottom: 1px solid ${props => props.theme.backgroundColorLight}
-    }
-`;
 
 const SearchInput = styled(Input) `
     width: 100%;
@@ -38,8 +25,8 @@ export function JoinChannel (props: Props) {
     const refetchRef = React.useRef<Function>()
     const createMembershipRef = React.useRef<MutationFunction>()
     const fetchData  = debounce((e:React.ChangeEvent<HTMLInputElement>) => {
-        (refetchRef as any).current({channelName:`%${e.target.value}%`})}
-        ,300)
+        (refetchRef as any).current({channelName:`%${e.target.value}%`});
+        },300)
     const filterChannels = (e:React.ChangeEvent<HTMLInputElement>) => {
         e.persist()
         fetchData(e)
@@ -59,11 +46,8 @@ export function JoinChannel (props: Props) {
     }
     return (
         <Modal close = {props.exitCallback} title ="Browse channels">
-            <Form 
-                onSubmit={(e: any)=> {
-                e.preventDefault();
-                e.target.reset()
-                }}>
+            <>
+            <Form>
                 <SearchInput 
                 name="channelName" 
                 id = "channelName" 
@@ -75,33 +59,35 @@ export function JoinChannel (props: Props) {
                     createMembershipRef.current = createMembershipFn
                     return (
                     <Query query = {allChannelsQuery}
-                    variables = {{channelName: "%%"}}>
+                    variables = {{channelName: '%%'}}>
                         {({loading, error, data, refetch}:
                         QueryResult) => {
+                            console.log(data)
                             refetchRef.current = refetch
                              if (loading) {
                                  return <p>loading</p>
                              }
                             return (
                             <>
-                                <ChannelContainer>
+                                <DataContainer>
                                 {data.Channel.map((channel: {id: string, name: string, Memberships: any}) =>
-                                    (<ChannelItem 
+                                    (<DataItem 
                                         key = {channel.id} 
                                         onClick={() => selectChannel(
                                             {id:channel.id, name:channel.name},
                                             channel.Memberships
                                             )} >
                                         # {channel.name}
-                                    </ChannelItem>
+                                    </DataItem>
                                     ))}
-                                </ChannelContainer>
+                                </DataContainer>
                             </>
                             )
                         }}
                     </Query>
                 )}}
-            </Mutation> 
+            </Mutation>
+            </>
         </Modal>
     )
 }

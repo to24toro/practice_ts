@@ -41,7 +41,7 @@ export const joinChannel = gql`
     ) {
       returning {
         id
-        Chanel {
+        Channel {
           id
           name
         }
